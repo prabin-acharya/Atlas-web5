@@ -5,6 +5,10 @@
     "essay": {
       "schema": "https://www.google.com/hello/essay",
       "dataFormats": ["application/json"]
+    },
+    "comment": {
+      "schema": "https://www.google.com/hello/comment",
+      "dataFormats": ["application/json"]
     }
   },
   "structure": {
@@ -18,7 +22,21 @@
           "who": "anyone",
           "can": "write"
         }
-      ]
+      ],
+      "comment": {
+        "$actions": [
+          {
+            "who": "author",
+            "of": "list",
+            "can": "write"
+          },
+          {
+            "who": "recipient",
+            "of": "list",
+            "can": "write"
+          }
+        ]
+      }
     }
   }
 }

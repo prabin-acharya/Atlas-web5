@@ -17,15 +17,15 @@
       <div v-else>
         <ul class="mb-10">
           <li
-            v-for="(todo, index) in essayList"
+            v-for="(essay, index) in essayList"
             :key="index"
             class="mb-2 p-4 border rounded"
           >
-            <nuxt-link :to="`/todos/${todo.id}`" class="text-blue-500">
-              <h2 class="text-xl font-bold">{{ todo.data.title }}</h2>
-              <p>{{ todo.data.description }}</p>
+            <nuxt-link :to="`/${essay.id}`" class="text-blue-500">
+              <h2 class="text-xl font-bold">{{ essay.data.title }}</h2>
+              <p>{{ essay.data.content }}</p>
               <p class="text-gray-500">
-                Created by: {{ todo.data.author.substr(0, 22) }}...
+                Created by: {{ essay.data.author.substr(0, 22) }}...
               </p>
             </nuxt-link>
           </li>
