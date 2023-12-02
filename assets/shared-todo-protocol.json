@@ -1,0 +1,24 @@
+{
+  "protocol": "https://www.google.com/hello/",
+  "published": true,
+  "types": {
+    "essay": {
+      "schema": "https://www.google.com/hello/essay",
+      "dataFormats": ["application/json"]
+    }
+  },
+  "structure": {
+    "essay": {
+      "$actions": [
+        {
+          "who": "anyone",
+          "can": "read"
+        },
+        {
+          "who": "anyone",
+          "can": "write"
+        }
+      ]
+    }
+  }
+}
