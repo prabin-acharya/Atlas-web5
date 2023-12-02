@@ -10,14 +10,14 @@
         </button>
       </header>
       <hr class="my-5" />
-      <div v-if="sharedList.length === 0" class="empty-state text-center pt-20">
+      <div v-if="essayList.length === 0" class="empty-state text-center pt-20">
         <p class="mb-4 text-gray-500">No Shared Todos yet.</p>
       </div>
 
       <div v-else>
         <ul class="mb-10">
           <li
-            v-for="(todo, index) in sharedList"
+            v-for="(todo, index) in essayList"
             :key="index"
             class="mb-2 p-4 border rounded"
           >
@@ -33,7 +33,7 @@
       </div>
       <div v-if="!showForm" class="text-center">
         <button @click="showForm = true" class="btn btn-primary">
-          Create Shared Todo List
+          Create New Essay
         </button>
       </div>
     </div>
@@ -122,7 +122,7 @@ onBeforeMount(async () => {
   for (let record of records) {
     const data = await record.data.json();
     const list = { record, data, id: record.id };
-    sharedList.value.push(list);
+    essayList.value.push(list);
   }
 });
 
