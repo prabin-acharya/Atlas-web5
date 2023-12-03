@@ -1,5 +1,5 @@
 {
-  "protocol": "https://www.google.com/hello/",
+  "protocol": "https://www.google.com/hello0/",
   "published": true,
   "types": {
     "essay": {
@@ -7,7 +7,7 @@
       "dataFormats": ["application/json"]
     },
     "comment": {
-      "schema": "https://www.google.com/hello/comment",
+      "schema": "https://www.google.com/hello/comments",
       "dataFormats": ["application/json"]
     }
   },
@@ -27,12 +27,12 @@
         "$actions": [
           {
             "who": "author",
-            "of": "list",
+            "of": "essay",
             "can": "write"
           },
           {
             "who": "recipient",
-            "of": "list",
+            "of": "essay",
             "can": "write"
           }
         ]
