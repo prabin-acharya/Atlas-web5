@@ -2,94 +2,111 @@
 <template>
   <div>
     <div class="container mx-auto p-4 w-1/2">
-      <header class="flex-col text-center mb-4">
-        <h1 class="text-2xl font-bold mb-4">All Essays</h1>
-        <button v-if="myDID" class="btn" id="copy-did" @click="copyDID">
-          Copy your DID
-        </button>
+      <header class="flex justify-between mb-4">
+        <h1 class="text-4xl font-extrabold mb-4 text-orange-500">Atlas</h1>
+        <p v-if="myDID" class="cursor-pointer" id="copy-did" @click="copyDID">
+          <!-- Copy your DID -->
+          {{ myDID.substr(0, 15) }}...
+        </p>
       </header>
       <hr class="my-5" />
-      <div v-if="essayList.length === 0" class="empty-state text-center pt-20">
-        <p class="mb-4 text-gray-500">No Shared Todos yet.</p>
-      </div>
 
-      <div v-else>
-        <!-- my essays -->
-        <p class="text-lg font-extrabold text-gray-500">My Essays</p>
-        <ul class="mb-10">
-          <li
-            v-for="(essay, index) in essayList.filter(
-              (essay) => essay.data.author == myDID
-            )"
-            :key="index"
-            class="p-2"
-          >
-            <nuxt-link :to="`/${essay.id}`" class="text-blue-500">
-              <h2 class="text-xl font-bold">{{ essay.data.title }}</h2>
-              <!-- <p>{{ essay.data.content }}</p> -->
-              <!-- <p class="text-gray-500">
+      <div v-if="!showForm">
+        <div
+          v-if="essayList.length === 0"
+          class="empty-state text-center pt-20"
+        >
+          <p class="mb-4 text-gray-500">No Essays saved yet. Start Writing!</p>
+        </div>
+
+        <div v-else>
+          <!-- my essays -->
+          <p class="text-lg font-extrabold text-gray-500">My Essays</p>
+          <ul class="mb-10">
+            <li
+              v-for="(essay, index) in essayList.filter(
+                (essay) => essay.data.author == myDID
+              )"
+              :key="index"
+              class="p-2"
+            >
+              <nuxt-link :to="`/${essay.id}`" class="text-blue-500">
+                <h2 class="text-xl font-bold">{{ essay.data.title }}</h2>
+                <!-- <p>{{ essay.data.content }}</p> -->
+                <!-- <p class="text-gray-500">
                 Created by: {{ essay.data.author.substr(0, 22) }}...
               </p> -->
-            </nuxt-link>
-          </li>
-        </ul>
+              </nuxt-link>
+            </li>
+          </ul>
 
-        <!-- shared with me -->
-        <p class="text-lg font-extrabold text-gray-500">Shared with me</p>
-        <ul class="mb-10">
-          <li
-            v-for="(essay, index) in essayList.filter(
-              (essay) => essay.data.author != myDID
-            )"
+          <!-- shared with me -->
+          <p
+            v-if="
+              essayList.filter((essay) => essay.data.author != myDID).length > 0
+            "
+            class="text-lg font-extrabold text-gray-500"
           >
-            <nuxt-link :to="`/${essay.id}`" class="text-blue-500">
-              <h2 class="text-xl font-bold">{{ essay.data.title }}</h2>
-            </nuxt-link>
-          </li>
-        </ul>
-      </div>
+            Shared with me
+          </p>
+          <ul class="mb-10">
+            <li
+              v-for="(essay, index) in essayList.filter(
+                (essay) => essay.data.author != myDID
+              )"
+            >
+              <nuxt-link :to="`/${essay.id}`" class="text-blue-500">
+                <h2 class="text-xl font-bold">{{ essay.data.title }}</h2>
+              </nuxt-link>
+            </li>
+          </ul>
+        </div>
 
-      <div v-if="!showForm" class="text-center">
-        <button @click="showForm = true" class="btn btn-primary">
-          Create New Essay
-        </button>
+        <div v-if="!showForm" class="text-center">
+          <button
+            @click="showForm = true"
+            class="btn btn-primary flex items-center"
+          >
+            <plus-icon-mini class="w-4 h-4 m-2 mb-3" /> Write a New Essay
+          </button>
+        </div>
       </div>
     </div>
     <!-- --------------------------------- -->
-    <div
-      class="border border-red-400 w-2/3 flex m-auto p-4 items-center justify-center"
-    >
+    <div class="w-2/3 flex m-auto p-4 items-center justify-center">
       <form v-if="showForm" @submit.prevent="createNewEssay" class="mb-4">
         <div class="mb-4">
-          <label for="title" class="block mb-2">Title:</label>
+          <!-- <label for="title" class="block mb-2">Title:</label> -->
           <input
             type="text"
             id="title"
+            placeholder="Title"
             v-model="newEssay.title"
-            class="w-full p-2 border rounded"
+            class="w-full p-2 rounded outline-none text-4xl font-bold"
             required
           />
         </div>
         <div class="mb-4">
-          <label for="description" class="block mb-2">content:</label>
           <textarea
             id="description"
+            placeholder="write something amazing..."
             v-model="newEssay.content"
-            class="w-full p-2 border rounded"
+            class="w-full p-2 outline-none rounded text-xl"
             required
           ></textarea>
         </div>
-        <div class="mb-4">
-          <label for="userId" class="block mb-2">Recipient's DID:</label>
+        <div class="mb-4 flex align-middle items-center">
+          <label for="userId" class="block mb-2 mr-4">Share with:</label>
           <input
             type="text"
             id="userId"
+            placeholder="Enter recipients DID"
             v-model="newEssay.recipientDID"
-            class="w-full p-2 border rounded"
+            class="w-2/3 p-2 border rounded outline-none"
             required
           />
         </div>
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">Save</button>
         <button
           type="button"
           class="btn ml-4 btn-secondary"
@@ -105,6 +122,7 @@
 <script setup>
 import { ref } from "vue";
 import protocolDefinition from "assets/shared-todo-protocol.json";
+import { PlusIcon as PlusIconMini } from "@heroicons/vue/solid";
 
 const { $web5: web5, $myDID: myDID } = useNuxtApp();
 
@@ -142,8 +160,6 @@ onBeforeMount(async () => {
     const list = { record, data, id: record.id };
     essayList.value.push(list);
   }
-
-  console.log(essayList, "*******************");
 });
 
 const copyDID = async () => {
@@ -244,7 +260,7 @@ const createNewEssay = async () => {
 <style scoped>
 .btn {
   padding: 0.5rem 1rem;
-  background-color: #3490dc;
+  background-color: #499122;
   color: white;
   border: none;
   border-radius: 0.25rem;
@@ -267,6 +283,6 @@ const createNewEssay = async () => {
 }
 
 .btn:hover {
-  background-color: #2779bd;
+  background-color: #238214;
 }
 </style>
