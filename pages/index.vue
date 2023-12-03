@@ -3,7 +3,7 @@
   <div>
     <div class="container mx-auto p-4 w-1/2">
       <header class="flex-col text-center mb-4">
-        <h1 class="text-2xl font-bold mb-4">Shared Todo</h1>
+        <h1 class="text-2xl font-bold mb-4">All Essays</h1>
         <button v-if="myDID" class="btn" id="copy-did" @click="copyDID">
           Copy your DID
         </button>
@@ -142,6 +142,8 @@ onBeforeMount(async () => {
     const list = { record, data, id: record.id };
     essayList.value.push(list);
   }
+
+  console.log(essayList, "*******************");
 });
 
 const copyDID = async () => {
@@ -215,8 +217,6 @@ const createNewEssay = async () => {
         recipient: recipientDID,
       },
     });
-
-    console.log(record, "+++");
 
     const data = await record.data.json();
     const essay = { record, data, id: record.id };
