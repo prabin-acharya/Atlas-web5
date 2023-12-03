@@ -1,10 +1,9 @@
 <!-- pages/todos/index.vue -->
 <template>
   <div>
-    <div class="container mx-auto p-4 w-1/3">
+    <div class="container mx-auto p-4 w-1/2">
       <header class="flex-col text-center mb-4">
         <h1 class="text-2xl font-bold mb-4">Shared Todo</h1>
-        <p>Manage a set of todos towards your goals with friends.</p>
         <button v-if="myDID" class="btn" id="copy-did" @click="copyDID">
           Copy your DID
         </button>
@@ -15,22 +14,41 @@
       </div>
 
       <div v-else>
+        <!-- my essays -->
+        <p class="text-lg font-extrabold text-gray-500">My Essays</p>
         <ul class="mb-10">
           <li
-            v-for="(essay, index) in essayList"
+            v-for="(essay, index) in essayList.filter(
+              (essay) => essay.data.author == myDID
+            )"
             :key="index"
-            class="mb-2 p-4 border rounded"
+            class="p-2"
           >
             <nuxt-link :to="`/${essay.id}`" class="text-blue-500">
               <h2 class="text-xl font-bold">{{ essay.data.title }}</h2>
-              <p>{{ essay.data.content }}</p>
-              <p class="text-gray-500">
+              <!-- <p>{{ essay.data.content }}</p> -->
+              <!-- <p class="text-gray-500">
                 Created by: {{ essay.data.author.substr(0, 22) }}...
-              </p>
+              </p> -->
+            </nuxt-link>
+          </li>
+        </ul>
+
+        <!-- shared with me -->
+        <p class="text-lg font-extrabold text-gray-500">Shared with me</p>
+        <ul class="mb-10">
+          <li
+            v-for="(essay, index) in essayList.filter(
+              (essay) => essay.data.author != myDID
+            )"
+          >
+            <nuxt-link :to="`/${essay.id}`" class="text-blue-500">
+              <h2 class="text-xl font-bold">{{ essay.data.title }}</h2>
             </nuxt-link>
           </li>
         </ul>
       </div>
+
       <div v-if="!showForm" class="text-center">
         <button @click="showForm = true" class="btn btn-primary">
           Create New Essay

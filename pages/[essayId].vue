@@ -1,25 +1,54 @@
 <!-- /_essayId.vue -->
 <template>
-  <div class="container mx-auto p-4 w-1/3">
+  <div class="container mx-auto p-4 w-1/2">
     <header class="flex-col text-center mb-4">
       <h1 class="text-2xl font-bold mb-4">Shared Essay</h1>
       <p>Share essay drafts with your friends.</p>
       <hr class="my-5" />
 
-      <div v-if="!fetchingListInfo">
-        <h2 class="text-xl font-bold">{{ essay.title }}</h2>
-        <p>{{ essay.content }}</p>
+      <div v-if="!fetchingListInfo" class="text-left">
+        <div class="pb-8">
+          <h2 class="text-5xl font-bold mb-4">{{ essay.title }}</h2>
+          <p class="text-lg">{{ essay.content }}</p>
+        </div>
         <br />
-        <p>{{ essay.author?.substr(0, 22) }}...</p>
-        <p>{{ essay.recipient?.substr(0, 22) }}...</p>
+        <p><b>Written by: </b> {{ essay.author?.substr(0, 22) }}...</p>
+        <p><b>Shared with: </b>{{ essay.recipient?.substr(0, 22) }}...</p>
+
+        <hr />
       </div>
       <div v-else>
         <p>Fetching essay...</p>
       </div>
     </header>
     <div>
+      <!-- Comments -->
+      <h2 v-if="!fetchingListInfo" class="text-xl font-bold py-2">Comments</h2>
+      <ul class="px-4">
+        <li
+          v-for="(item, index) in commentItems"
+          :key="index"
+          class="flex items-center mb-2 p-2 border rounded-md"
+        >
+          <div class="font-light ml-3 text-xl">
+            {{ item.data.content }}
+            <p class="text-gray-400 text-sm">
+              Added by: {{ item.data.author.substr(0, 22) }}...
+            </p>
+          </div>
+          <!-- <div class="ml-auto">
+            <div v-show="myDID != item.data.author && item.data.completed">
+              <CheckCircleIcon
+                class="h-8 text-gray-200 w-8"
+                :class="{ 'text-green-500': item.data.completed }"
+              />
+            </div>
+          </div> -->
+        </li>
+      </ul>
+
       <!-- Add Comment Form -->
-      <div class="mt-16 mb-5">
+      <div class="mt-4 mb-5">
         <form class="flex space-x-4" @submit.prevent="addComment">
           <div class="border-b border-gray-200 sm:w-full">
             <label for="add-todo" class="sr-only">Add a comment</label>
@@ -41,32 +70,6 @@
           </button>
         </form>
       </div>
-      <h2 v-if="!fetchingListInfo" class="text-xl font-bold mb-2">Comments</h2>
-      <ul>
-        <li
-          v-for="(item, index) in commentItems"
-          :key="index"
-          class="flex items-center mb-2 p-4 border rounded"
-        >
-          <div class="font-light ml-3 text-gray-500 text-xl">
-            {{ item.data.content }}
-            <p class="text-gray-400 text-sm">
-              Added by: {{ item.data.author.substr(0, 22) }}...
-            </p>
-          </div>
-          <div class="ml-auto">
-            <!-- <div @click="deleteTodo(item)" class="cursor-pointer" v-show="myDID == item.data.author">
-                            <TrashIcon class="h-8 text-gray-200 w-8" :class="'text-red-500'" />
-                        </div> -->
-            <div v-show="myDID != item.data.author && item.data.completed">
-              <CheckCircleIcon
-                class="h-8 text-gray-200 w-8"
-                :class="{ 'text-green-500': item.data.completed }"
-              />
-            </div>
-          </div>
-        </li>
-      </ul>
     </div>
     <div class="mt-4">
       <nuxt-link to="/" class="text-blue-500">Back to Essay Lists</nuxt-link>
