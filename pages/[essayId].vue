@@ -23,7 +23,7 @@
     <div class="flex flex-row-reverse">
       <p
         @click="isEditing = true"
-        v-if="essay.author !== myDID && !isEditing"
+        v-if="essay.author == myDID && !isEditing"
         class="px-3 hover:bg-gray-300 w-fit rounded cursor-pointer"
       >
         edit
@@ -370,6 +370,10 @@ const updateEssay = async () => {
     return;
   }
 };
+
+onMounted(() => {
+  document.title = "Atlas";
+});
 </script>
 
 <style scoped>
