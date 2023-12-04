@@ -131,7 +131,7 @@
 
 <script setup>
 import { ref } from "vue";
-import protocolDefinition from "assets/shared-todo-protocol.json";
+import protocolDefinition from "assets/shared-essays-protocol.json";
 import { PlusIcon as PlusIconMini } from "@heroicons/vue/solid";
 
 const { $web5: web5, $myDID: myDID } = useNuxtApp();

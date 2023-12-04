@@ -141,7 +141,7 @@ import { ref } from "vue";
 import { useRoute } from "vue-router";
 import { PlusIcon as PlusIconMini } from "@heroicons/vue/solid";
 import { CheckCircleIcon, TrashIcon } from "@heroicons/vue/outline";
-import protocolDefinition from "assets/shared-todo-protocol.json";
+import protocolDefinition from "assets/shared-essays-protocol.json";
 
 const route = useRoute();
 const essayId = ref(route.params.essayId);
