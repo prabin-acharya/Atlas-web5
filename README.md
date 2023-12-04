@@ -1,6 +1,8 @@
-# Nuxt 3 Minimal Starter
+# Atlas
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Atlas is a simple decentralized collaborative writing application. Write essays and collaborate with your friends.
+
+Write essays, articles, documents, notes, etc. share them with your friends and get feedbackk.
 
 ## Setup
 
