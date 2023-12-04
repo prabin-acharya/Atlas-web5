@@ -16,10 +16,21 @@
     </header>
     <hr class="my-5" />
 
-    <div v-if="!fetchingListInfo" class="text-left pt-16">
-      <div class="pb-8">
-        <h2 class="text-5xl font-bold mb-4">{{ essay.title }}</h2>
-        <!-- <p class="text-lg">{{ essay.content }}</p> -->
+    <div class="flex flex-row-reverse">
+      <p
+        @click="isEditing = true"
+        v-if="!isEditing"
+        class="px-3 hover:bg-gray-300 w-fit rounded cursor-pointer"
+      >
+        edit
+      </p>
+    </div>
+
+    <div v-if="!fetchingListInfo" class="text-left">
+      <div v-if="!isEditing" class="pb-8">
+        <h2 class="text-5xl font-bold mb-4">
+          {{ essay.title }}
+        </h2>
         <div
           v-for="(paragraph, index) in essay.content.split('\n')"
           :key="index"
@@ -44,13 +55,7 @@
               />
             </div>
           </div>
-          <!-- <div v-if="commentsByParagraph[index]"> -->
           <div v-if="getCommentsForParagraph(index).length" class="flex">
-            <!-- <div
-                v-for="(comment, commentIndex) in commentsByParagraph[index]"
-                :key="commentIndex"
-                class="w-fit p-2 rounded-full bg-gray-900 text-white px-6 shadow-2xl"
-              > -->
             <div
               v-for="(comment, commentIndex) in getCommentsForParagraph(index)"
               :key="commentIndex"
@@ -63,6 +68,40 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div v-if="isEditing" class="flex m-auto p-4">
+        <form @submit.prevent="updateEssay" class="mb-4 w-full">
+          <div class="mb-4">
+            <!-- <label for="title" class="block mb-2">Title:</label> -->
+            <input
+              v-model="editedEssayTitle"
+              type="text"
+              id="title"
+              placeholder="Title"
+              class="w-full p-2 rounded outline-none text-4xl font-bold"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <textarea
+              v-model="editedEssayContent"
+              id="description"
+              placeholder="write something amazing..."
+              rows="10"
+              class="w-full p-2 px-4 outline-none text-xl overflow-hidden border rounded-md"
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button
+            type="button"
+            class="btn ml-4 btn-secondary"
+            @click="isEditing = false"
+          >
+            Cancel
+          </button>
+        </form>
       </div>
       <br />
       <p><b>Written by: </b> {{ essay.author?.substr(0, 22) }}...</p>
@@ -96,8 +135,13 @@ let commentRecipient;
 
 let essay = ref({});
 
+let editedEssayContent = ref("");
+let editedEssayTitle = ref("");
+
 let commentItems = ref([]);
 const fetchingListInfo = ref(true);
+
+let isEditing = ref(false);
 
 // Adding comments
 const newCommentContent = ref("");
@@ -125,6 +169,9 @@ onBeforeMount(async () => {
   });
 
   essay = await record.data.json();
+
+  editedEssayTitle = essay.title;
+  editedEssayContent = essay.content;
 
   // fetch comments under list.
   const { records: comments } = await web5.dwn.records.query({
@@ -219,41 +266,84 @@ const getCommentsForParagraph = (paragraphIndex) => {
   return a;
 };
 
-// async function addComment() {
-//   const commentData = {
-//     content: newCommentContent.value,
-//     author: myDID,
-//     parentId: essayId.value,
-//   };
+const updateEssay = async () => {
+  try {
+    const { record } = await web5.dwn.records.read({
+      message: {
+        filter: {
+          recordId: essayId.value,
+        },
+      },
+    });
 
-//   newCommentContent.value = "";
+    const { status } = await record.update({
+      data: {
+        title: editedEssayTitle,
+        content: editedEssayContent,
+        author: myDID,
+        recipient: essay.recipient,
+      },
+    });
 
-//   console.log(commentData);
+    console.log(status, "########################+++++++++++++++++++++++=");
 
-//   const { record: commentRecord, status: createStatus } =
-//     await web5.dwn.records.create({
-//       data: commentData,
-//       message: {
-//         protocol: protocolDefinition.protocol,
-//         protocolPath: "essay/comment",
-//         schema: protocolDefinition.types.comment.schema,
-//         dataFormat: protocolDefinition.types.comment.dataFormats[0],
-//         parentId: essayId.value,
-//         contextId: essayId.value,
-//       },
-//     });
+    const { record: editedRecord } = await web5.dwn.records.read({
+      message: {
+        filter: {
+          recordId: essayId.value,
+        },
+      },
+    });
 
-//   const data = await commentRecord.data.json();
-//   const comment = { commentRecord, data, id: commentRecord.id };
-//   commentItems.value.push(comment);
+    //
+    isEditing.value = false;
 
-//   const { status: sendStatus } = await commentRecord.send(commentRecipient);
+    essay.title = editedEssayTitle;
+    essay.content = editedEssayContent;
 
-//   if (sendStatus.code !== 202) {
-//     console.log("Unable to send to target did:" + sendStatus);
-//     return;
-//   } else {
-//     console.log("Sent todo to recipient");
-//   }
-// }
+    const { status: sendStatus } = await editedRecord.send(essay.recipient);
+
+    if (sendStatus.code !== 202) {
+      console.log("Unable to send to target did:" + sendStatus);
+      return;
+    } else {
+      console.log("Shared list sent to recipient");
+    }
+
+    console.log("here..........", isEditing);
+  } catch (e) {
+    console.error(e);
+    return;
+  }
+};
 </script>
+
+<style scoped>
+.btn {
+  padding: 0.5rem 1rem;
+  background-color: #499122;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: #aaa;
+}
+
+.btn:hover {
+  background-color: #238214;
+}
+</style>

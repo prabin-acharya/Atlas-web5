@@ -1,80 +1,89 @@
 <!-- pages/todos/index.vue -->
 <template>
   <div>
-    <div class="container mx-auto p-4 w-1/2">
-      <header class="flex justify-between mb-4">
-        <h1 class="text-4xl font-extrabold mb-4 text-orange-500">Atlas</h1>
-        <p v-if="myDID" class="cursor-pointer" id="copy-did" @click="copyDID">
-          <!-- Copy your DID -->
-          {{ myDID.substr(0, 15) }}...
-        </p>
-      </header>
-      <hr class="my-5" />
+    <div class="container mx-auto p-4 w-2/3">
+      <div class="w-3/4 m-auto">
+        <header class="flex justify-between mb-4">
+          <h1 class="text-4xl font-extrabold mb-4 text-orange-500">Atlas</h1>
+          <p v-if="myDID" class="cursor-pointer" id="copy-did" @click="copyDID">
+            <!-- Copy your DID -->
+            {{ myDID.substr(0, 15) }}...
+          </p>
+        </header>
+        <hr class="my-5" />
 
-      <div v-if="!showForm">
-        <div
-          v-if="essayList.length === 0"
-          class="empty-state text-center pt-20"
-        >
-          <p class="mb-4 text-gray-500">No Essays saved yet. Start Writing!</p>
-        </div>
+        <div v-if="!showForm">
+          <div
+            v-if="essayList.length === 0"
+            class="empty-state text-center pt-20"
+          >
+            <p class="mb-4 text-gray-500">
+              No Essays saved yet. Start Writing!
+            </p>
+          </div>
 
-        <div v-else>
-          <!-- my essays -->
-          <p class="text-lg font-extrabold text-gray-500">My Essays</p>
-          <ul class="mb-10">
-            <li
-              v-for="(essay, index) in essayList.filter(
-                (essay) => essay.data.author == myDID
-              )"
-              :key="index"
-              class="p-2"
-            >
-              <nuxt-link :to="`/${essay.id}`" class="text-blue-500">
-                <h2 class="text-xl font-bold">{{ essay.data.title }}</h2>
-                <!-- <p>{{ essay.data.content }}</p> -->
-                <!-- <p class="text-gray-500">
+          <div v-else>
+            <!-- my essays -->
+            <p class="text-lg font-extrabold text-gray-500">My Essays</p>
+            <ul class="mb-10">
+              <li
+                v-for="(essay, index) in essayList.filter(
+                  (essay) => essay.data.author == myDID
+                )"
+                :key="index"
+                class="p-2"
+              >
+                <nuxt-link :to="`/${essay.id}`" class="text-blue-500">
+                  <h2 class="text-xl font-bold">{{ essay.data.title }}</h2>
+                  <!-- <p>{{ essay.data.content }}</p> -->
+                  <!-- <p class="text-gray-500">
                 Created by: {{ essay.data.author.substr(0, 22) }}...
               </p> -->
-              </nuxt-link>
-            </li>
-          </ul>
+                </nuxt-link>
+              </li>
+            </ul>
 
-          <!-- shared with me -->
-          <p
-            v-if="
-              essayList.filter((essay) => essay.data.author != myDID).length > 0
-            "
-            class="text-lg font-extrabold text-gray-500"
-          >
-            Shared with me
-          </p>
-          <ul class="mb-10">
-            <li
-              v-for="(essay, index) in essayList.filter(
-                (essay) => essay.data.author != myDID
-              )"
+            <!-- shared with me -->
+            <p
+              v-if="
+                essayList.filter((essay) => essay.data.author != myDID).length >
+                0
+              "
+              class="text-lg font-extrabold text-gray-500"
             >
-              <nuxt-link :to="`/${essay.id}`" class="text-blue-500">
-                <h2 class="text-xl font-bold">{{ essay.data.title }}</h2>
-              </nuxt-link>
-            </li>
-          </ul>
-        </div>
+              Shared with me
+            </p>
+            <ul class="mb-10">
+              <li
+                v-for="(essay, index) in essayList.filter(
+                  (essay) => essay.data.author != myDID
+                )"
+              >
+                <nuxt-link :to="`/${essay.id}`" class="text-blue-500">
+                  <h2 class="text-xl font-bold">{{ essay.data.title }}</h2>
+                </nuxt-link>
+              </li>
+            </ul>
+          </div>
 
-        <div v-if="!showForm" class="text-center">
-          <button
-            @click="showForm = true"
-            class="btn btn-primary flex items-center"
-          >
-            <plus-icon-mini class="w-4 h-4 m-2 mb-3" /> Write a New Essay
-          </button>
+          <div v-if="!showForm" class="text-center">
+            <button
+              @click="showForm = true"
+              class="btn btn-primary flex items-center"
+            >
+              <plus-icon-mini class="w-4 h-4 m-2 mb-3" /> Write a New Essay
+            </button>
+          </div>
         </div>
       </div>
     </div>
     <!-- --------------------------------- -->
-    <div class="w-2/3 flex m-auto p-4 items-center justify-center">
-      <form v-if="showForm" @submit.prevent="createNewEssay" class="mb-4">
+    <div class="w-1/2 flex m-auto p-4">
+      <form
+        v-if="showForm"
+        @submit.prevent="createNewEssay"
+        class="mb-4 w-full"
+      >
         <div class="mb-4">
           <!-- <label for="title" class="block mb-2">Title:</label> -->
           <input
@@ -91,7 +100,8 @@
             id="description"
             placeholder="write something amazing..."
             v-model="newEssay.content"
-            class="w-full p-2 outline-none rounded text-xl"
+            rows="10"
+            class="w-full p-2 outline-none rounded text-xl overflow-hidden"
             required
           ></textarea>
         </div>
