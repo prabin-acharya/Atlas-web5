@@ -35,7 +35,7 @@
           v-for="(paragraph, index) in essay.content.split('\n')"
           :key="index"
           class="mb-4 text-lg hover:cursor"
-          @click="showCommentInput(index)"
+          @click="handleParagraphClick(index)"
           :style="{ cursor: getParagraphCursor(index) }"
         >
           <p>
@@ -43,16 +43,33 @@
           </p>
           <div v-if="isInputVisible(index)" class="flex flex-row-reverse">
             <div
-              class="mt-1 border-2 border-green-600 rounded-full p-2 w-fit py-3"
+              class="mt-1 border-2 border-green-600 rounded-lg p-2 w-fit py-3"
             >
               <input
                 autofocus
                 type="text"
-                placeholder="Add comment..."
+                placeholder="Add a comment..."
                 class="outline-none font-medium px-2"
-                @blur="hideCommentInput"
-                @keydown.enter="saveComment(index, $event)"
+                @keydown.enter="saveComment(index, $event.target.value)"
+                ref="commentInput"
               />
+              <div class="flex flex-row-reverse">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6 cursor-pointer"
+                  @click.stop="saveComment(index, $refs.commentInput[0].value)"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
           <div v-if="getCommentsForParagraph(index).length" class="flex">
@@ -208,9 +225,22 @@ const hideCommentInput = () => {
   showAddCommentInput.value = null;
 };
 
-async function saveComment(index, event) {
+const handleParagraphClick = (index) => {
+  console.log("pa click");
+  if (showAddCommentInput.value == index) showCommentInput.value = null;
+  else {
+    showCommentInput(index);
+  }
+};
+
+async function saveComment(index, commentValue) {
+  hideCommentInput();
+
+  console.log();
+
+  console.log(commentValue, "commentVale");
   const commentData = {
-    content: event.target.value,
+    content: commentValue,
     paragraphIndex: index,
     author: myDID,
     parentId: essayId.value,
@@ -245,8 +275,6 @@ async function saveComment(index, event) {
   } else {
     console.log("Sent todo to recipient");
   }
-
-  hideCommentInput();
 }
 
 const isHovered = (index) => {
