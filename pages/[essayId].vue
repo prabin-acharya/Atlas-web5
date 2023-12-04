@@ -8,7 +8,11 @@
     </header> -->
 
     <header class="flex justify-between mb-4">
-      <h1 class="text-4xl font-extrabold mb-4 text-orange-500">Atlas</h1>
+      <router-link to="/"
+        ><h1 class="text-4xl font-extrabold mb-4 text-orange-500">
+          Atlas
+        </h1></router-link
+      >
       <p v-if="myDID" class="cursor-pointer" id="copy-did" @click="copyDID">
         <!-- Copy your DID -->
         {{ myDID.substr(0, 15) }}...
@@ -41,9 +45,45 @@
           <p>
             {{ paragraph }}
           </p>
+
+          <div
+            v-if="getCommentsForParagraph(index).length"
+            class="flex flex-col"
+          >
+            <div
+              v-for="(comment, commentIndex) in getCommentsForParagraph(index)"
+              :key="commentIndex"
+              class="flex flex-row-reverse p-2 py-0 rounded-xl w-full px-4 m-1 items-center"
+            >
+              <div
+                class="w-fit border border-green-700 flex flex-row items-center rounded-md p-2 py-0"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6 mr-3"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z"
+                  />
+                </svg>
+                <div>
+                  <p class="font-small">{{ comment.data.content }}</p>
+                  <p class="text-gray-400 text-sm">
+                    Added by: {{ comment.data.author.substr(0, 12) }}...
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div v-if="isInputVisible(index)" class="flex flex-row-reverse">
             <div
-              class="mt-1 border-2 border-green-600 rounded-lg p-2 w-fit py-3"
+              class="mt-1 border-2 border-green-600 rounded-lg p-2 w-fit py-3 shadow-lg"
             >
               <input
                 autofocus
@@ -70,18 +110,6 @@
                   />
                 </svg>
               </div>
-            </div>
-          </div>
-          <div v-if="getCommentsForParagraph(index).length" class="flex">
-            <div
-              v-for="(comment, commentIndex) in getCommentsForParagraph(index)"
-              :key="commentIndex"
-              class="w-fit p-2 rounded-xl border border-green-700 px-4 shadow-md m-1"
-            >
-              <p class="font-light">{{ comment.data.content }}</p>
-              <p class="text-gray-400 text-sm">
-                Added by: {{ comment.data.author.substr(0, 12) }}...
-              </p>
             </div>
           </div>
         </div>
@@ -235,8 +263,6 @@ const handleParagraphClick = (index) => {
 
 async function saveComment(index, commentValue) {
   hideCommentInput();
-
-  console.log();
 
   console.log(commentValue, "commentVale");
   const commentData = {
