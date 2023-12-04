@@ -19,7 +19,7 @@
     <div class="flex flex-row-reverse">
       <p
         @click="isEditing = true"
-        v-if="!isEditing"
+        v-if="essay.author !== myDID && !isEditing"
         class="px-3 hover:bg-gray-300 w-fit rounded cursor-pointer"
       >
         edit
